@@ -1,6 +1,8 @@
 package com.example.newsapp.presentation.home;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsapp.R;
+import com.example.newsapp.data.network.dto.news.Article;
 import com.example.newsapp.databinding.ActivityMainBinding;
+import com.example.newsapp.presentation.detail.DetailActivity;
+import com.example.newsapp.presentation.home.recyclerview.NewsOnClickListener;
 import com.example.newsapp.presentation.home.recyclerview.TopHeadlineAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewsOnClickListener {
 
     private HomeViewModel viewModel;
     ActivityMainBinding binding;
@@ -53,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRVs() {
-        businessAdapter = new TopHeadlineAdapter(new ArrayList<>());
+        businessAdapter = new TopHeadlineAdapter(new ArrayList<>(), this);
         rvBusiness = binding.rvBusiness;
         rvBusiness.setAdapter(businessAdapter);
         rvBusiness.setLayoutManager(new LinearLayoutManager(this));
 
-        sportsAdapter = new TopHeadlineAdapter(new ArrayList<>());
+        sportsAdapter = new TopHeadlineAdapter(new ArrayList<>(), this);
         rvSports = binding.rvSports;
         rvSports.setAdapter(sportsAdapter);
         rvSports.setLayoutManager(new LinearLayoutManager(this));
@@ -70,5 +76,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         viewModel.clearDisposables();
+    }
+
+    @Override
+    public void onClick(Article article) {
+        Intent intent = new Intent(this,DetailActivity.class);
+        intent.putExtra("url", article.getUrl());
+        startActivity(intent);
     }
 }

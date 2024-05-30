@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,15 +13,16 @@ import com.bumptech.glide.Glide;
 import com.example.newsapp.R;
 import com.example.newsapp.data.network.dto.news.Article;
 import com.example.newsapp.databinding.ItemNewsBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 public class TopHeadlineAdapter extends RecyclerView.Adapter<TopHeadlineAdapter.TopHeadlineViewHolder> {
 
     private Context context;
+    private final NewsOnClickListener listener;
     private List<Article> news;
-    public TopHeadlineAdapter(List<Article> news) {
+    public TopHeadlineAdapter(List<Article> news, NewsOnClickListener listener) {
+        this.listener = listener;
         this.news = news;
     }
 
@@ -65,8 +65,8 @@ public class TopHeadlineAdapter extends RecyclerView.Adapter<TopHeadlineAdapter.
                     .into(binding.ivNew);
             binding.tvTitle.setText(article.getTitle());
             binding.tvAuthor.setText(article.getAuthor());
-            binding.getRoot().setOnClickListener( (view) ->
-                Snackbar.make(itemView, article.getTitle(), Snackbar.LENGTH_SHORT).show()
+            binding.getRoot().setOnClickListener( view ->
+                listener.onClick(article)
             );
         }
 
